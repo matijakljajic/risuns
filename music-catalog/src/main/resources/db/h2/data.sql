@@ -45,9 +45,9 @@ INSERT INTO track_feature (id, track_id, artist_id, credit_order) VALUES
 
 -- Users
 INSERT INTO users (id, username, email, password_hash, role, enabled, display_name) VALUES
-  (1, 'matija', 'matija@example.test', 'x', 'USER', TRUE, 'Matija'),
-  (2, 'sara',    'nuj@example.test',    'x', 'USER', TRUE, 'Sara'),
-  (3, 'admin',  'admin@example.test',  'x', 'ADMIN', TRUE, 'Admin');
+  (1, 'matija', 'matija@example.test', '$2a$12$MLMQq56IrBCUNeOrvMIc4ewHt6U1EV8HftSZv93A7ZJjeKiK7n9C6', 'USER', TRUE, 'Matija'),
+  (2, 'sara',    'nuj@example.test',    '$2a$12$ZEB97SJORmPRJDlWA1NrP.SP.FnETf8aO/VcKqIrPGwyBCKqKsdNW', 'USER', TRUE, 'Sara'),
+  (3, 'admin',  'admin@example.test',  '$2a$12$XIUODmY6BvfR2ygtH5z4u.3g6967xzlYwhP9KMzPauzO.ywNRYwMO', 'ADMIN', TRUE, 'Admin');
 
 -- Messages
 INSERT INTO message (id, sender_id, receiver_id, sent_at, content) VALUES

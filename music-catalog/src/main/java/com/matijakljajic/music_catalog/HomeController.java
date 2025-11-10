@@ -5,7 +5,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
-  @GetMapping("/") public String home() { return "home"; }
+  @GetMapping("/")
+  public String home() { return "home"; }
+
+  @GetMapping("/search")
+  public String search() { return "search"; }
 
   // --- Diagnostic endpoint ---
   @GetMapping("/ping")
@@ -14,4 +18,3 @@ public class HomeController {
     return "ok";
   }
 }
-

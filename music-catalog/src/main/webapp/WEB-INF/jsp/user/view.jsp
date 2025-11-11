@@ -40,12 +40,23 @@
   <div class="page-shell">
     <a class="back-link" href="/">← Home</a>
     <div class="content-card">
+      <c:if test="${not empty message}">
+        <div class="flash">${message}</div>
+      </c:if>
       <h1>${profile.displayName != null ? profile.displayName : profile.username}</h1>
       <div class="meta-grid">
         <div class="meta-item"><strong>Username</strong><br>${profile.username}</div>
         <div class="meta-item"><strong>Role</strong><br>${profile.role}</div>
         <div class="meta-item"><strong>Email</strong><br><c:out value="${profile.email}"/></div>
       </div>
+
+      <c:if test="${canMessage}">
+        <p>
+          <a class="btn small" href="/messages/new?to=${profile.id}">
+            Message ${profile.username}
+          </a>
+        </p>
+      </c:if>
 
       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
         <h3 style="margin:0;">Playlists</h3>
@@ -135,6 +146,24 @@
           </div>
         </c:otherwise>
       </c:choose>
+      <c:if test="${isSelf}">
+        <h3>Notifications</h3>
+        <form method="post" action="/users/${profile.id}/preferences/message-notifications"
+              style="display:flex; flex-direction:column; gap:12px; max-width:420px; border:1px solid #e2e8f0; padding:16px; background:#f8fafc;">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+          <input type="hidden" name="notifyOnMessage" value="false"/>
+          <label style="display:flex; align-items:flex-start; gap:12px;">
+            <input type="checkbox" name="notifyOnMessage" value="true"
+              <c:if test="${profile.notifyOnMessage}">checked</c:if>
+              style="margin-top:4px;">
+            <span>
+              <strong>Message Notifications</strong><br>
+              Send me an email when I get a new message.
+            </span>
+          </label>
+          <button type="submit" class="btn small" style="align-self:flex-start;">Save</button>
+        </form>
+      </c:if>
     </div>
   </div>
 </body>

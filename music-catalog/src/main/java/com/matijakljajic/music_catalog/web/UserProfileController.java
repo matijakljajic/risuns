@@ -27,6 +27,7 @@ public class UserProfileController {
     model.addAttribute("profile", view.getProfile());
     model.addAttribute("visiblePlaylists", view.getVisiblePlaylists());
     model.addAttribute("isSelf", view.isSelf());
+    model.addAttribute("canMessage", !view.isSelf());
     model.addAttribute("publicPlaylistCount", view.getPublicPlaylistCount());
     model.addAttribute("privatePlaylistCount", view.getPrivatePlaylistCount());
     model.addAttribute("weeklyListensPage", view.getWeeklyListensPage());

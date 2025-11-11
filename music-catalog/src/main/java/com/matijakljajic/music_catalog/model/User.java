@@ -33,6 +33,9 @@ public class User {
   @Column(nullable = false)
   private boolean enabled = true;
 
+  @Column(name = "notify_on_message", nullable = false)
+  private boolean notifyOnMessage = false;
+
   public boolean isAdmin() { return role == Role.ADMIN; }
   public boolean isUser()  { return role == Role.USER;  }
 }

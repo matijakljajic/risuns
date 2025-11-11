@@ -60,6 +60,7 @@
         </sec:authorize>
 
         <sec:authorize access="isAuthenticated()">
+          <li><a href="/messages">Messages</a></li>
           <li class="logout-li">
             <form class="inline" action="/logout" method="post">
               <span>Signed in as <sec:authentication property="name"/></span><span>-</span>

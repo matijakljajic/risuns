@@ -17,8 +17,9 @@ public class GenreAdminController {
   private final AdminGenreService genres;
 
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("genres", genres.findAll());
+  public String list(@RequestParam(value = "q", required = false) String query, Model model) {
+    model.addAttribute("genres", genres.search(query));
+    model.addAttribute("query", query);
     return "admin/genres/list";
   }
 

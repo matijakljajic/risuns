@@ -1,11 +1,13 @@
+// src/main/java/com/matijakljajic/music_catalog/config/SecurityConfig.java
 package com.matijakljajic.music_catalog.config;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -15,22 +17,38 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
       .authorizeHttpRequests(auth -> auth
+        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-        .requestMatchers(HttpMethod.GET, "/", "/search").permitAll()
-        .requestMatchers("/signup", "/login").permitAll()
-        .requestMatchers("/admin/**", "/h2-console/**").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.GET,
+            "/", "/search", "/artists/**", "/albums/**", "/playlists/**", "/users/**", "/ping"
+        ).permitAll()
+        .requestMatchers("/login", "/signup", "/register", "/error").permitAll()
+        .requestMatchers("/h2-console/**").hasRole("ADMIN")
+        .requestMatchers("/admin/**").hasRole("ADMIN")
         .anyRequest().authenticated()
       )
       .headers(h -> h.frameOptions(f -> f.sameOrigin()))
       .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-      // Use Spring’s default login until you implement /login
       .formLogin(fl -> fl
-          //.loginPage("/login")
-          .defaultSuccessUrl("/", true)
-          .permitAll()
+        .loginPage("/login")
+        .loginProcessingUrl("/login")
+        .defaultSuccessUrl("/", true)
+        .failureUrl("/login?error")
+        .permitAll()
       )
-      .logout(Customizer.withDefaults());
+      .logout(logout -> logout
+        .logoutUrl("/logout")
+        .logoutSuccessUrl("/login?logout")
+        .permitAll()
+      );
 
     return http.build();
+  }
+
+  @Bean
+  WebSecurityCustomizer webSecurityCustomizer() {
+    return web -> web.ignoring().requestMatchers(
+      "/webjars/**", "/assets/**", "/static/**", "/css/**", "/js/**", "/images/**"
+    );
   }
 }

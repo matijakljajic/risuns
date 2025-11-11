@@ -85,6 +85,13 @@
       flex-direction: column;
       gap: 8px;
     }
+    .chat-heading {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    .chat-heading a {
+      font-weight: bold;
+    }
     .chat-form textarea {
       width: 100%;
       border: 1px solid #cbd5f5;
@@ -149,7 +156,7 @@
           </c:when>
           <c:otherwise>
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <h2 style="margin:0;">Chat with ${activePartner.label}</h2>
+              <h2 class="chat-heading">Chat with <a href="/users/${activePartner.id}">${activePartner.label}</a></h2>
             </div>
             <div class="chat-messages"
                  id="chatMessages"

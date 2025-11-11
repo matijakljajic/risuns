@@ -1,18 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
   <title>Search</title>
+  <%@ include file="/WEB-INF/jsp/_site_header_styles.jspf" %>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
-      padding: 24px;
       background-color: #f7f7f7;
       color: #111;
     }
+    main { padding: 24px; }
 
     h2 {
       margin-top: 0;
@@ -20,13 +22,12 @@
       font-weight: 600;
     }
 
-    form {
+    .search-form {
       display: flex;
       flex-wrap: wrap;
       gap: 16px 24px;
       align-items: flex-end;
       padding: 16px 20px;
-      background: #ffffff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
       margin-bottom: 24px;
       border: 1px solid #eee;
@@ -62,6 +63,17 @@
 
     button[type="submit"]:hover {
       background: #222;
+    }
+
+    .filter-block {
+      display: none;
+      flex-direction: row;
+      gap: 12px;
+      min-width: 200px;
+    }
+
+    .filter-block.is-visible {
+      display: flex;
     }
 
     h3 {
@@ -157,69 +169,74 @@
   </style>
 </head>
 <body>
-  <h2>Search the Catalog</h2>
-  <form method="get" action="/search">
-    <label>
-      Search type
-      <select name="type">
-        <option value="general" <c:if test="${searchType == 'general'}">selected</c:if>>General</option>
-        <option value="tracks" <c:if test="${searchType == 'tracks'}">selected</c:if>>Tracks</option>
-        <option value="artists" <c:if test="${searchType == 'artists'}">selected</c:if>>Artists</option>
-        <option value="albums" <c:if test="${searchType == 'albums'}">selected</c:if>>Albums</option>
-        <option value="users" <c:if test="${searchType == 'users'}">selected</c:if>>Users</option>
-      </select>
-    </label>
+  <%@ include file="/WEB-INF/jsp/_site_nav.jspf" %>
 
-    <label>
-      Keywords
-      <input type="text" name="q" value="<c:out value='${query}'/>" placeholder="Track title..." />
-    </label>
-
-    <c:if test="${searchType == 'tracks'}">
+  <main>
+    <h2>Search the Catalog</h2>
+    <form class="search-form" method="get" action="/search">
       <label>
-        Genre
-        <select name="genreId">
-          <option value="">All genres</option>
-          <c:forEach items="${genres}" var="genre">
-            <option value="${genre.id}" <c:if test="${genre.id == selectedGenreId}">selected</c:if>>
-              ${genre.name}
-            </option>
-          </c:forEach>
+        Search type
+        <select name="type" data-type-select>
+          <option value="general" <c:if test="${searchType == 'general'}">selected</c:if>>General</option>
+          <option value="tracks" <c:if test="${searchType == 'tracks'}">selected</c:if>>Tracks</option>
+          <option value="artists" <c:if test="${searchType == 'artists'}">selected</c:if>>Artists</option>
+          <option value="albums" <c:if test="${searchType == 'albums'}">selected</c:if>>Albums</option>
+          <option value="users" <c:if test="${searchType == 'users'}">selected</c:if>>Users</option>
         </select>
       </label>
-      <label>
-        Explicit
-        <select name="explicit">
-          <option value="">All tracks</option>
-          <option value="true" <c:if test="${explicitFilter == 'true'}">selected</c:if>>Explicit only</option>
-          <option value="false" <c:if test="${explicitFilter == 'false'}">selected</c:if>>Clean only</option>
-        </select>
-      </label>
-    </c:if>
 
-    <c:if test="${searchType == 'albums'}">
       <label>
-        Release year
-        <input type="number" name="releaseYear" min="1900" max="2100" value="<c:out value='${releaseYear}'/>" />
+        Keywords
+        <input type="text" name="q" value="<c:out value='${query}'/>" placeholder="Track title..." />
       </label>
-    </c:if>
 
-    <c:if test="${searchType == 'users'}">
-      <label>
-        Role
-        <select name="role">
-          <option value="">All roles</option>
-          <c:forEach items="${roles}" var="roleOption">
-            <option value="${roleOption}" <c:if test="${roleFilter == roleOption}">selected</c:if>>
-              ${roleOption}
-            </option>
-          </c:forEach>
-        </select>
-      </label>
-    </c:if>
+      <div class="filter-block ${searchType == 'tracks' ? "is-visible" : ""}" data-filter="tracks">
+        <label>
+          Genre
+          <select name="genreId">
+            <option value="">All genres</option>
+            <c:forEach items="${genres}" var="genre">
+              <option value="${genre.id}" <c:if test="${genre.id == selectedGenreId}">selected</c:if>>
+                ${genre.name}
+              </option>
+            </c:forEach>
+          </select>
+        </label>
+        <label>
+          Explicit
+          <select name="explicit">
+            <option value="">All tracks</option>
+            <option value="true" <c:if test="${explicitFilter == 'true'}">selected</c:if>>Explicit only</option>
+            <option value="false" <c:if test="${explicitFilter == 'false'}">selected</c:if>>Clean only</option>
+          </select>
+        </label>
+      </div>
 
-    <button type="submit">Search</button>
-  </form>
+      <div class="filter-block ${searchType == 'albums' ? "is-visible" : ""}" data-filter="albums">
+        <label>
+          Release year
+          <input type="number" name="releaseYear" min="1900" max="2100" value="<c:out value='${releaseYear}'/>" />
+        </label>
+      </div>
+
+      <div class="filter-block ${searchType == 'users' ? "is-visible" : ""}" data-filter="users">
+        <label>
+          Role
+          <select name="role">
+            <option value="">All roles</option>
+            <c:forEach items="${roles}" var="roleOption">
+              <option value="${roleOption}" <c:if test="${roleFilter == roleOption}">selected</c:if>>
+                ${roleOption}
+              </option>
+            </c:forEach>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit">Search</button>
+      </div>
+    </form>
 
   <c:if test="${searched}">
     <div class="results-section">
@@ -328,7 +345,24 @@
       </div>
     </div>
   </c:if>
+  </main>
 
-  <p class="back-link"><a href="/">← Back to Home</a></p>
+  <script>
+    (function(){
+      const typeSelect = document.querySelector('[data-type-select]');
+      const filterBlocks = document.querySelectorAll('[data-filter]');
+      function syncFilters(){
+        const val = typeSelect ? typeSelect.value : 'general';
+        filterBlocks.forEach(block => {
+          block.classList.toggle('is-visible', block.getAttribute('data-filter') === val);
+        });
+      }
+      if (typeSelect) {
+        typeSelect.addEventListener('change', syncFilters);
+        syncFilters();
+      }
+    })();
+  </script>
+
 </body>
 </html>

@@ -7,6 +7,7 @@ import com.matijakljajic.music_catalog.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -20,6 +21,14 @@ public class AdminAlbumService {
 
   public List<Album> findAll() {
     return albums.findAll();
+  }
+
+  public List<Album> search(String query, Integer year) {
+    String trimmed = StringUtils.hasText(query) ? query.trim() : null;
+    if (trimmed == null && year == null) {
+      return findAll();
+    }
+    return albums.search(trimmed, year);
   }
 
   public Album get(Long id) {

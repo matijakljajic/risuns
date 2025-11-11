@@ -12,6 +12,7 @@ import com.matijakljajic.music_catalog.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -30,6 +31,14 @@ public class AdminTrackService {
 
   public List<Track> findAll() {
     return tracks.findAll();
+  }
+
+  public List<Track> search(String query, Long genreId, Boolean explicit) {
+    String trimmed = StringUtils.hasText(query) ? query.trim() : null;
+    if (trimmed == null && genreId == null && explicit == null) {
+      return findAll();
+    }
+    return tracks.search(trimmed, genreId, explicit);
   }
 
   public Track get(Long id) {

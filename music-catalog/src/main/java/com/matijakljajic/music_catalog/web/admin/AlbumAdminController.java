@@ -19,8 +19,12 @@ public class AlbumAdminController {
   private final AdminArtistService artists;
 
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("albums", albums.findAll());
+  public String list(@RequestParam(value = "q", required = false) String query,
+                     @RequestParam(value = "year", required = false) Integer year,
+                     Model model) {
+    model.addAttribute("albums", albums.search(query, year));
+    model.addAttribute("query", query);
+    model.addAttribute("yearFilter", year);
     return "admin/albums/list";
   }
 

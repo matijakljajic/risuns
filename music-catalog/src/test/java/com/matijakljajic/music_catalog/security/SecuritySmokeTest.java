@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("h2")
+@ActiveProfiles({"h2", "seed-jpa"})
 class SecuritySmokeTest {
 
   @Autowired MockMvc mvc;
@@ -23,6 +23,8 @@ class SecuritySmokeTest {
   void publicEndpoints_areAccessibleWithoutLogin() throws Exception {
     mvc.perform(get("/")).andExpect(status().isOk());
     mvc.perform(get("/search")).andExpect(status().isOk());
+    mvc.perform(get("/login")).andExpect(status().isOk());
+    mvc.perform(get("/signup")).andExpect(status().isOk());
     // static assets should also pass if present
     // mvc.perform(get("/css/app.css")).andExpect(status().isOk());
   }

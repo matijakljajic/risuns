@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -20,6 +21,14 @@ public class AdminUserService {
 
   public List<User> findAll() {
     return users.findAll();
+  }
+
+  public List<User> search(String query, Role role, Boolean enabled) {
+    String trimmed = StringUtils.hasText(query) ? query.trim() : null;
+    if (trimmed == null && role == null && enabled == null) {
+      return findAll();
+    }
+    return users.search(trimmed, role, enabled);
   }
 
   public User get(Long id) {

@@ -6,117 +6,119 @@
 <head>
   <meta charset="UTF-8"/>
   <title>Music Catalog</title>
+  <%@ include file="/WEB-INF/jsp/_site_header_styles.jspf" %>
   <style>
-    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; padding: 0; }
-    header { background: #111; color: #fff; padding: 12px 24px; }
-    .brand { font-size: 1.4rem; margin: 0; }
-    .main-nav { width: 100%; margin-top: 8px; }
-    .main-nav ul {
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      background-color: #f7f7f7;
+      color: #111;
+    }
+    main { padding: 24px; }
+
+    .cards {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .info-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      padding: 20px 24px;
+    }
+
+    .info-card h3 {
+      margin: 0 0 12px;
+    }
+
+    .genre-list,
+    .listen-list {
       list-style: none;
       margin: 0;
       padding: 0;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      width: 100%;
+      display: grid;
+      gap: 8px;
     }
-    .main-nav a { color: #f5f5f5; text-decoration: none; }
-    .main-nav a:hover { text-decoration: underline; }
-    .logout-li {
-      margin-left: auto; /* pushes this item to the far right */
-    }
-    form.inline { display: inline-flex; align-items: center; gap: 8px; }
-    .logout-btn {
-      border: none;
-      background: #111;
-      color: #f5f5f5;
-      padding: 0;
-      cursor: pointer;
+
+    .genre-chip {
+      display: inline-flex;
+      padding: 6px 10px;
+      border: 1px solid #e5e7eb;
+      background: #f4f5f7;
       text-decoration: none;
-      font-size: medium;
+      color: #111;
+      font-weight: 500;
     }
-    .logout-btn:hover {
+
+    .listen-item {
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      background: #fafafa;
+    }
+
+    .listen-item a {
+      font-weight: 600;
+      color: #111;
+      text-decoration: none;
+    }
+
+    .listen-item a:hover,
+    .genre-chip:hover {
       text-decoration: underline;
     }
-    main { padding: 24px; }
-    section { margin-bottom: 32px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1 class="brand">Music Catalog</h1>
-    <nav class="main-nav">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/search">Search</a></li>
-
-        <sec:authorize access="isAnonymous()">
-          <li><a href="/login">Login</a></li>
-        </sec:authorize>
-
-        <sec:authorize access="hasRole('ADMIN')">
-          <li><a href="/admin">Dashboard</a></li>
-          <li><a href="/h2-console">H2 Console</a></li>
-        </sec:authorize>
-
-        <sec:authorize access="isAuthenticated()">
-          <li><a href="/messages">Messages</a></li>
-          <li class="logout-li">
-            <form class="inline" action="/logout" method="post">
-              <span>Signed in as <sec:authentication property="name"/></span><span>-</span>
-              <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-              <button class="logout-btn" type="submit">Logout</button>
-            </form>
-          </li>
-        </sec:authorize>
-      </ul>
-    </nav>
-  </header>
+  <%@ include file="/WEB-INF/jsp/_site_nav.jspf" %>
 
   <main>
-    <section>
-      <h3>Browse by genre</h3>
-      <c:choose>
-        <c:when test="${empty genres}">
-          <p>No genres available yet.</p>
-        </c:when>
-        <c:otherwise>
-          <ul>
-            <c:forEach items="${genres}" var="genre">
-              <li><a href="/search?type=tracks&genreId=${genre.id}">${genre.name}</a></li>
-            </c:forEach>
-          </ul>
-        </c:otherwise>
-      </c:choose>
-    </section>
+    <div class="cards">
+      <section class="info-card">
+        <h3>Browse by genre</h3>
+        <c:choose>
+          <c:when test="${empty genres}">
+            <p>No genres available yet.</p>
+          </c:when>
+          <c:otherwise>
+            <ul class="genre-list">
+              <c:forEach items="${genres}" var="genre">
+                <li><a class="genre-chip" href="/search?type=tracks&genreId=${genre.id}">${genre.name}</a></li>
+              </c:forEach>
+            </ul>
+          </c:otherwise>
+        </c:choose>
+      </section>
 
-    <section>
-      <h3>Latest listens</h3>
-      <c:choose>
-        <c:when test="${empty recentListens}">
-          <p>No one has listened to anything yet. Come back soon!</p>
-        </c:when>
-        <c:otherwise>
-          <ul>
-            <c:forEach items="${recentListens}" var="listen">
-              <li>
-                <a href="/users/${listen.userId}">${listen.username}</a>
-                listened to
-                <a href="/albums/${listen.albumId}">${listen.trackTitle}</a>
-                by
-                <a href="/artists/${listen.primaryArtist.id}">${listen.primaryArtist.name}</a>
-                <c:if test="${not empty listen.featuredArtists}">
-                  feat.
-                  <c:forEach items="${listen.featuredArtists}" var="feat" varStatus="loop">
-                    <a href="/artists/${feat.id}">${feat.name}</a><c:if test="${!loop.last}">, </c:if>
-                  </c:forEach>
-                </c:if>
-              </li>
-            </c:forEach>
-          </ul>
-        </c:otherwise>
-      </c:choose>
-    </section>
+      <section class="info-card">
+        <h3>Latest listens</h3>
+        <c:choose>
+          <c:when test="${empty recentListens}">
+            <p>No one has listened to anything yet. Come back soon!</p>
+          </c:when>
+          <c:otherwise>
+            <ul class="listen-list">
+              <c:forEach items="${recentListens}" var="listen">
+                <li class="listen-item">
+                  <a href="/users/${listen.userId}">${listen.username}</a>
+                  listened to
+                  <a href="/albums/${listen.albumId}">${listen.trackTitle}</a>
+                  by
+                  <a href="/artists/${listen.primaryArtist.id}">${listen.primaryArtist.name}</a>
+                  <c:if test="${not empty listen.featuredArtists}">
+                    feat.
+                    <c:forEach items="${listen.featuredArtists}" var="feat" varStatus="loop">
+                      <a href="/artists/${feat.id}">${feat.name}</a><c:if test="${!loop.last}">, </c:if>
+                    </c:forEach>
+                  </c:if>
+                </li>
+              </c:forEach>
+            </ul>
+          </c:otherwise>
+        </c:choose>
+      </section>
+    </div>
   </main>
 </body>
 </html>

@@ -20,8 +20,16 @@ public class TrackAdminController {
   private final AdminTrackService tracks;
 
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("tracks", tracks.findAll());
+  public String list(@RequestParam(value = "q", required = false) String query,
+                     @RequestParam(value = "genreId", required = false) Long genreId,
+                     @RequestParam(value = "explicit", required = false) String explicitParam,
+                     Model model) {
+    Boolean explicit = resolveExplicitFilter(explicitParam);
+    model.addAttribute("tracks", tracks.search(query, genreId, explicit));
+    model.addAttribute("query", query);
+    model.addAttribute("genreId", genreId);
+    model.addAttribute("explicitFilter", explicitParam);
+    model.addAttribute("genres", tracks.allGenres());
     return "admin/tracks/list";
   }
 
@@ -82,5 +90,14 @@ public class TrackAdminController {
 
   private List<Long> toIdList(Long[] ids) {
     return (ids == null || ids.length == 0) ? List.of() : Arrays.asList(ids);
+  }
+
+  private Boolean resolveExplicitFilter(String value) {
+    if (value == null || value.isBlank() || "all".equalsIgnoreCase(value)) {
+      return null;
+    }
+    return ("explicit".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value)) ? Boolean.TRUE
+        : ("clean".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) ? Boolean.FALSE
+        : null;
   }
 }

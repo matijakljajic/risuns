@@ -17,8 +17,9 @@ public class ArtistAdminController {
   private final AdminArtistService artists;
 
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("artists", artists.findAll());
+  public String list(@RequestParam(value = "q", required = false) String query, Model model) {
+    model.addAttribute("artists", artists.search(query));
+    model.addAttribute("query", query);
     return "admin/artists/list";
   }
 

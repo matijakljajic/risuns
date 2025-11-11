@@ -1,8 +1,10 @@
 package com.matijakljajic.music_catalog.web;
 
+import com.matijakljajic.music_catalog.repository.UserRepository;
 import com.matijakljajic.music_catalog.service.profile.UserProfileService;
 import com.matijakljajic.music_catalog.service.profile.UserProfileService.ProfileView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserProfileController {
 
   private final UserProfileService userProfiles;
+  private final UserRepository users;
+
+  @GetMapping("/me")
+  public String myProfile(Authentication authentication) {
+    if (authentication == null
+        || !authentication.isAuthenticated()
+        || authentication instanceof AnonymousAuthenticationToken) {
+      return "redirect:/login";
+    }
+    return users.findByUsername(authentication.getName())
+        .map(user -> "redirect:/users/" + user.getId())
+        .orElse("redirect:/login");
+  }
 
   @GetMapping("/{id}")
   public String view(@PathVariable Long id,

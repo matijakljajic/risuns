@@ -1,5 +1,6 @@
 package com.matijakljajic.music_catalog.web.admin;
 
+import com.matijakljajic.music_catalog.model.Role;
 import com.matijakljajic.music_catalog.model.User;
 import com.matijakljajic.music_catalog.service.admin.AdminUserService;
 import jakarta.validation.Valid;
@@ -17,8 +18,17 @@ public class UserAdminController {
   private final AdminUserService users;
 
   @GetMapping
-  public String list(Model model) {
-    model.addAttribute("users", users.findAll());
+  public String list(@RequestParam(value = "q", required = false) String query,
+                     @RequestParam(value = "role", required = false) String roleParam,
+                     @RequestParam(value = "status", required = false) String statusParam,
+                     Model model) {
+    Role roleFilter = resolveRole(roleParam);
+    Boolean enabled = resolveStatus(statusParam);
+    model.addAttribute("users", users.search(query, roleFilter, enabled));
+    model.addAttribute("query", query);
+    model.addAttribute("roleFilter", roleParam);
+    model.addAttribute("statusFilter", statusParam);
+    model.addAttribute("roles", users.roles());
     return "admin/users/list";
   }
 
@@ -72,5 +82,29 @@ public class UserAdminController {
   public String delete(@PathVariable Long id) {
     users.delete(id);
     return "redirect:/admin/users";
+  }
+
+  private Role resolveRole(String name) {
+    if (name == null || name.isBlank()) {
+      return null;
+    }
+    try {
+      return Role.valueOf(name);
+    } catch (IllegalArgumentException ex) {
+      return null;
+    }
+  }
+
+  private Boolean resolveStatus(String status) {
+    if (status == null || status.isBlank() || "all".equalsIgnoreCase(status)) {
+      return null;
+    }
+    if ("enabled".equalsIgnoreCase(status) || "true".equalsIgnoreCase(status)) {
+      return Boolean.TRUE;
+    }
+    if ("disabled".equalsIgnoreCase(status) || "false".equalsIgnoreCase(status)) {
+      return Boolean.FALSE;
+    }
+    return null;
   }
 }

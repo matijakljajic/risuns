@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated for simple user profile report -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="user-profile"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="515"
+              leftMargin="40"
+              rightMargin="40"
+              topMargin="40"
+              bottomMargin="40"
+              uuid="cdd47f74-95ea-4b17-a1eb-6a51f492d86d">
+
+    <property name="net.sf.jasperreports.default.font.name" value="Helvetica"/>
+    <property name="net.sf.jasperreports.default.pdf.encoding" value="Cp1252"/>
+    <property name="net.sf.jasperreports.default.pdf.embedded" value="false"/>
+
+    <parameter name="ReportGeneratedAt" class="java.lang.String"/>
+    <parameter name="Username" class="java.lang.String"/>
+    <parameter name="DisplayName" class="java.lang.String"/>
+    <parameter name="Email" class="java.lang.String"/>
+    <parameter name="Role" class="java.lang.String"/>
+    <parameter name="PublicPlaylistCount" class="java.lang.String"/>
+    <parameter name="PrivatePlaylistCount" class="java.lang.String"/>
+    <parameter name="WeeklyListenCount" class="java.lang.String"/>
+    <parameter name="WeeklyUniqueTracks" class="java.lang.String"/>
+    <parameter name="WeeklySince" class="java.lang.String"/>
+    <parameter name="TopTracksText" class="java.lang.String"/>
+
+    <field name="name" class="java.lang.String"/>
+    <field name="visibilityLabel" class="java.lang.String"/>
+    <field name="trackCount" class="java.lang.Integer"/>
+    <field name="createdAtLabel" class="java.lang.String"/>
+
+    <title>
+        <band height="140">
+            <staticText>
+                <reportElement x="0" y="0" width="300" height="24" uuid="1105dbe9-f667-4a05-9709-92dcb03fe343"/>
+                <textElement>
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[User Listening Report]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="30" width="515" height="20" uuid="bcaeb888-45d1-478d-b042-a52dbb953d9c"/>
+                <textFieldExpression><![CDATA["Generated at " + $P{ReportGeneratedAt}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="60" width="150" height="18" uuid="8bc2348f-234e-46aa-8b26-5cd924b2ed01"/>
+                <text><![CDATA[Username]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="60" width="365" height="18" uuid="3bcccac2-1210-42b4-8124-445f19e72985"/>
+                <textFieldExpression><![CDATA[$P{Username}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="80" width="150" height="18" uuid="f53fc51d-8040-40bd-bb63-fd00604e00b2"/>
+                <text><![CDATA[Display name]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="80" width="365" height="18" uuid="a90d1078-1d7f-46f7-ac43-20cd1601a4dd"/>
+                <textFieldExpression><![CDATA[$P{DisplayName}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="100" width="150" height="18" uuid="16ffcc9f-4d7c-4ab4-b318-aad063a2c006"/>
+                <text><![CDATA[Email]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="100" width="365" height="18" uuid="efad0c18-65a3-422e-9f40-d6f81ffe6705"/>
+                <textFieldExpression><![CDATA[$P{Email}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="120" width="150" height="18" uuid="9f5396b0-2c97-4b75-bb5f-3e795dd528c7"/>
+                <text><![CDATA[Role]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="150" y="120" width="365" height="18" uuid="cd91ac84-02bb-444c-976e-882750f57728"/>
+                <textFieldExpression><![CDATA[$P{Role}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <pageHeader>
+        <band height="40">
+            <textField>
+                <reportElement x="0" y="0" width="515" height="18" uuid="4fa227d4-6f7b-4a9b-8913-33ac4badb0cc"/>
+                <textFieldExpression><![CDATA["Playlists overview · Public: " + $P{PublicPlaylistCount} + " · Private: " + $P{PrivatePlaylistCount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="20" width="515" height="18" uuid="ce237fb2-1d3d-40b5-a200-7724af092615"/>
+                <textFieldExpression><![CDATA["Listens (7 days): " + $P{WeeklyListenCount} + " plays · " + $P{WeeklyUniqueTracks} + " unique tracks since " + $P{WeeklySince}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+
+    <columnHeader>
+        <band height="24">
+            <rectangle>
+                <reportElement x="0" y="0" width="515" height="24" backcolor="#f0f2f8" uuid="8f91657b-e554-434d-b41b-b06a388d1af2"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="10" y="4" width="200" height="16" uuid="a1bf8177-7884-4747-b301-27b15dc0efd1"/>
+                <text><![CDATA[Playlist]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="230" y="4" width="90" height="16" uuid="21b18a7a-ec48-4454-80e6-b384e0d7ebb0"/>
+                <text><![CDATA[Visibility]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="330" y="4" width="60" height="16" uuid="407a01a0-f485-4f75-8047-7a3882658a37"/>
+                <text><![CDATA[Tracks]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="400" y="4" width="105" height="16" uuid="7a8865d3-1c15-4a0f-b78d-8b6c7f1cbc03"/>
+                <text><![CDATA[Created]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="22">
+            <line>
+                <reportElement x="0" y="21" width="515" height="1" forecolor="#d9ddea" uuid="475cba7d-c095-4139-b929-1b0cb86ce3fb"/>
+            </line>
+            <textField>
+                <reportElement x="10" y="2" width="210" height="18" uuid="1a71158d-e0c2-4f86-871f-0bb7a8f3a298"/>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="230" y="2" width="90" height="18" uuid="27d3cf2d-70f9-4a28-90ad-5d2d73215afd"/>
+                <textFieldExpression><![CDATA[$F{visibilityLabel}]]></textFieldExpression>
+            </textField>
+            <textField pattern="###0">
+                <reportElement x="330" y="2" width="60" height="18" uuid="22940586-56cd-47c4-9c76-0476e6d7df16"/>
+                <textFieldExpression><![CDATA[$F{trackCount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="400" y="2" width="105" height="18" uuid="435c9e7e-b6af-4379-b751-6a370a0fcc19"/>
+                <textFieldExpression><![CDATA[$F{createdAtLabel}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="120">
+            <rectangle>
+                <reportElement x="0" y="0" width="515" height="90" backcolor="#f7f9fc" uuid="f2fe134d-e79a-4e8b-8f4b-703b52f32558"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="10" y="10" width="150" height="18" uuid="7ffab83e-1cb8-4fad-9f0d-0e6809482449"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Top tracks (7 days)]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="10" y="32" width="495" height="58" uuid="700a5342-5674-4bd8-8e79-142fe975d87c"/>
+                <textFieldExpression><![CDATA[$P{TopTracksText}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

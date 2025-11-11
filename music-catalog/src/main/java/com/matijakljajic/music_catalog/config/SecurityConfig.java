@@ -19,8 +19,9 @@ public class SecurityConfig {
       .authorizeHttpRequests(auth -> auth
         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+        .requestMatchers("/users/*/report/**").authenticated()
         .requestMatchers(HttpMethod.GET,
-            "/", "/search", "/artists/**", "/albums/**", "/playlists/**", "/users/**", "/ping"
+            "/", "/search", "/search/**", "/artists/**", "/albums/**", "/playlists/**", "/users/**", "/ping"
         ).permitAll()
         .requestMatchers("/login", "/signup", "/register", "/error").permitAll()
         .requestMatchers("/h2-console/**").hasRole("ADMIN")

@@ -193,7 +193,9 @@
       <div class="filter-block ${searchType == 'tracks' ? "is-visible" : ""}" data-filter="tracks">
         <label>
           Genre
-          <select name="genreId">
+          <select name="genreId"
+                  data-genre-select="true"
+                  data-selected-value="${selectedGenreId != null ? selectedGenreId : ''}">
             <option value="">All genres</option>
             <c:forEach items="${genres}" var="genre">
               <option value="${genre.id}" <c:if test="${genre.id == selectedGenreId}">selected</c:if>>
@@ -351,15 +353,62 @@
     (function(){
       const typeSelect = document.querySelector('[data-type-select]');
       const filterBlocks = document.querySelectorAll('[data-filter]');
+      const genreSelect = document.querySelector('[data-genre-select="true"]');
+      const loadedFilters = new Set();
+
       function syncFilters(){
         const val = typeSelect ? typeSelect.value : 'general';
         filterBlocks.forEach(block => {
           block.classList.toggle('is-visible', block.getAttribute('data-filter') === val);
         });
+        ensureFilterData(val);
       }
+
+      function shouldFetchOptions(selectEl) {
+        return selectEl && selectEl.options.length <= 1 && !loadedFilters.has(selectEl.name);
+      }
+
+      function populateSelect(selectEl, placeholder, items, selectedValue) {
+        if (!selectEl) return;
+        const frag = document.createDocumentFragment();
+        const baseOption = document.createElement('option');
+        baseOption.value = '';
+        baseOption.textContent = placeholder;
+        frag.appendChild(baseOption);
+        (items || []).forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.id;
+          option.textContent = item.name;
+          frag.appendChild(option);
+        });
+        selectEl.innerHTML = '';
+        selectEl.appendChild(frag);
+        if (selectedValue) {
+          selectEl.value = selectedValue;
+        }
+      }
+
+      async function ensureFilterData(type) {
+        if (type === 'tracks' && shouldFetchOptions(genreSelect)) {
+          loadedFilters.add('genreId');
+          try {
+            const response = await fetch('/search/filter-data?type=tracks', { headers: { 'Accept': 'application/json' }});
+            if (!response.ok) throw new Error('Failed to load filter data');
+            const data = await response.json();
+            const selected = genreSelect.dataset.selectedValue || '';
+            populateSelect(genreSelect, 'All genres', data.genres || [], selected);
+          } catch (err) {
+            console.error(err);
+            loadedFilters.delete('genreId');
+          }
+        }
+      }
+
       if (typeSelect) {
         typeSelect.addEventListener('change', syncFilters);
         syncFilters();
+      } else {
+        ensureFilterData('general');
       }
     })();
   </script>

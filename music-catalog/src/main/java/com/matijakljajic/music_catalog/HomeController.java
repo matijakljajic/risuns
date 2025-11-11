@@ -112,6 +112,19 @@ public class HomeController {
     return "ok";
   }
 
+  @GetMapping("/search/filter-data")
+  @ResponseBody
+  public FilterDataResponse filterData(@RequestParam("type") String type) {
+    String searchType = normalizeType(type);
+    if ("tracks".equals(searchType)) {
+      var genreOptions = genres.allGenres().stream()
+          .map(g -> new GenreOption(g.getId(), g.getName()))
+          .toList();
+      return new FilterDataResponse(searchType, genreOptions);
+    }
+    return new FilterDataResponse(searchType, List.of());
+  }
+
   private String normalizeType(String type) {
     if (type == null || type.isBlank()) return "general";
     return switch (type.toLowerCase()) {
@@ -139,4 +152,8 @@ public class HomeController {
       return null;
     }
   }
+
+  public record FilterDataResponse(String type, List<GenreOption> genres) { }
+
+  public record GenreOption(Long id, String name) { }
 }

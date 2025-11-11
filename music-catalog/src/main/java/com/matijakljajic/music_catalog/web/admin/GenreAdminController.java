@@ -1,7 +1,7 @@
 package com.matijakljajic.music_catalog.web.admin;
 
 import com.matijakljajic.music_catalog.model.Genre;
-import com.matijakljajic.music_catalog.repository.GenreRepository;
+import com.matijakljajic.music_catalog.service.admin.AdminGenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/genres")
 public class GenreAdminController {
 
-  private final GenreRepository genres;
+  private final AdminGenreService genres;
 
   @GetMapping
   public String list(Model model) {
@@ -31,13 +31,13 @@ public class GenreAdminController {
   @PostMapping
   public String create(@Valid @ModelAttribute("genre") Genre genre, BindingResult br) {
     if (br.hasErrors()) return "admin/genres/form";
-    genres.save(genre);
+    genres.create(genre);
     return "redirect:/admin/genres";
   }
 
   @GetMapping("/{id}/edit")
   public String editForm(@PathVariable Long id, Model model) {
-    model.addAttribute("genre", genres.findById(id).orElseThrow());
+    model.addAttribute("genre", genres.get(id));
     return "admin/genres/form";
   }
 
@@ -45,14 +45,13 @@ public class GenreAdminController {
   public String update(@PathVariable Long id,
                        @Valid @ModelAttribute("genre") Genre genre, BindingResult br) {
     if (br.hasErrors()) return "admin/genres/form";
-    genre.setId(id);
-    genres.save(genre);
+    genres.update(id, genre);
     return "redirect:/admin/genres";
   }
 
   @PostMapping("/{id}/delete")
   public String delete(@PathVariable Long id) {
-    genres.deleteById(id);
+    genres.delete(id);
     return "redirect:/admin/genres";
   }
 }

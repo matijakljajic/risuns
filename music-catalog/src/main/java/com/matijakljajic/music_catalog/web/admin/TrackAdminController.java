@@ -1,10 +1,7 @@
 package com.matijakljajic.music_catalog.web.admin;
 
-import com.matijakljajic.music_catalog.model.Genre;
 import com.matijakljajic.music_catalog.model.Track;
-import com.matijakljajic.music_catalog.repository.AlbumRepository;
-import com.matijakljajic.music_catalog.repository.GenreRepository;
-import com.matijakljajic.music_catalog.repository.TrackRepository;
+import com.matijakljajic.music_catalog.service.admin.AdminTrackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,14 +9,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/tracks")
 public class TrackAdminController {
 
-  private final TrackRepository tracks;
-  private final AlbumRepository albums;
-  private final GenreRepository genres;
+  private final AdminTrackService tracks;
 
   @GetMapping
   public String list(Model model) {
@@ -30,8 +28,7 @@ public class TrackAdminController {
   @GetMapping("/new")
   public String createForm(Model model) {
     model.addAttribute("track", new Track());
-    model.addAttribute("albums", albums.findAll());
-    model.addAttribute("genres", genres.findAll());
+    populateLookups(model);
     return "admin/tracks/form";
   }
 
@@ -41,27 +38,17 @@ public class TrackAdminController {
                        Model model,
                        @RequestParam(value="genreIds", required=false) Long[] genreIds) {
     if (br.hasErrors()) {
-      model.addAttribute("albums", albums.findAll());
-      model.addAttribute("genres", genres.findAll());
+      populateLookups(model);
       return "admin/tracks/form";
     }
-    track.getGenres().clear();
-    if (genreIds != null) {
-      for (Long gid : genreIds) {
-        Genre g = genres.findById(gid).orElseThrow();
-        track.getGenres().add(g);
-      }
-    }
-    tracks.save(track);
+    tracks.create(track, toIdList(genreIds));
     return "redirect:/admin/tracks";
   }
 
   @GetMapping("/{id}/edit")
   public String editForm(@PathVariable Long id, Model model) {
-    Track t = tracks.findById(id).orElseThrow();
-    model.addAttribute("track", t);
-    model.addAttribute("albums", albums.findAll());
-    model.addAttribute("genres", genres.findAll());
+    model.addAttribute("track", tracks.get(id));
+    populateLookups(model);
     return "admin/tracks/form";
   }
 
@@ -72,24 +59,25 @@ public class TrackAdminController {
                        Model model,
                        @RequestParam(value="genreIds", required=false) Long[] genreIds) {
     if (br.hasErrors()) {
-      model.addAttribute("albums", albums.findAll());
-      model.addAttribute("genres", genres.findAll());
+      populateLookups(model);
       return "admin/tracks/form";
     }
-    track.setId(id);
-    track.getGenres().clear();
-    if (genreIds != null) {
-      for (Long gid : genreIds) {
-        track.getGenres().add(genres.findById(gid).orElseThrow());
-      }
-    }
-    tracks.save(track);
+    tracks.update(id, track, toIdList(genreIds));
     return "redirect:/admin/tracks";
   }
 
   @PostMapping("/{id}/delete")
   public String delete(@PathVariable Long id) {
-    tracks.deleteById(id);
+    tracks.delete(id);
     return "redirect:/admin/tracks";
+  }
+
+  private void populateLookups(Model model) {
+    model.addAttribute("albums", tracks.allAlbums());
+    model.addAttribute("genres", tracks.allGenres());
+  }
+
+  private List<Long> toIdList(Long[] ids) {
+    return (ids == null || ids.length == 0) ? List.of() : Arrays.asList(ids);
   }
 }

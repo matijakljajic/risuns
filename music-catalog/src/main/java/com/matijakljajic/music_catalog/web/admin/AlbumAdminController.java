@@ -1,8 +1,8 @@
 package com.matijakljajic.music_catalog.web.admin;
 
 import com.matijakljajic.music_catalog.model.Album;
-import com.matijakljajic.music_catalog.repository.AlbumRepository;
-import com.matijakljajic.music_catalog.repository.ArtistRepository;
+import com.matijakljajic.music_catalog.service.admin.AdminAlbumService;
+import com.matijakljajic.music_catalog.service.admin.AdminArtistService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/albums")
 public class AlbumAdminController {
 
-  private final AlbumRepository albums;
-  private final ArtistRepository artists;
+  private final AdminAlbumService albums;
+  private final AdminArtistService artists;
 
   @GetMapping
   public String list(Model model) {
@@ -37,13 +37,13 @@ public class AlbumAdminController {
       model.addAttribute("artists", artists.findAll());
       return "admin/albums/form";
     }
-    albums.save(album);
+    albums.create(album);
     return "redirect:/admin/albums";
   }
 
   @GetMapping("/{id}/edit")
   public String editForm(@PathVariable Long id, Model model) {
-    model.addAttribute("album", albums.findById(id).orElseThrow());
+    model.addAttribute("album", albums.get(id));
     model.addAttribute("artists", artists.findAll());
     return "admin/albums/form";
   }
@@ -54,14 +54,13 @@ public class AlbumAdminController {
       model.addAttribute("artists", artists.findAll());
       return "admin/albums/form";
     }
-    album.setId(id);
-    albums.save(album);
+    albums.update(id, album);
     return "redirect:/admin/albums";
   }
 
   @PostMapping("/{id}/delete")
   public String delete(@PathVariable Long id) {
-    albums.deleteById(id);
+    albums.delete(id);
     return "redirect:/admin/albums";
   }
 }

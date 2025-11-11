@@ -1,0 +1,18 @@
+<c:if test="${empty pageTitle}">
+  <c:set var="pageTitle" value="Dashboard"/>
+</c:if>
+<header class="admin-header">
+  <div>
+    <a class="admin-brand" href="/admin">Admin Console</a>
+    <span class="admin-page-title">${pageTitle}</span>
+  </div>
+  <nav class="admin-nav">
+    <a href="/">Home</a>
+    <a href="/admin">Dashboard</a>
+    <a href="/admin/genres">Genres</a>
+    <a href="/admin/artists">Artists</a>
+    <a href="/admin/albums">Albums</a>
+    <a href="/admin/tracks">Tracks</a>
+    <a href="/admin/users">Users</a>
+  </nav>
+</header>

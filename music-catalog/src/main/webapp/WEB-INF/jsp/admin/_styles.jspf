@@ -1,0 +1,256 @@
+<style>
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Inter", Arial, sans-serif;
+    background: #f5f6fb;
+    color: #111827;
+  }
+
+  a {
+    color: #0f172a;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .admin-header {
+    background: #111;
+    color: #f5f5f5;
+    padding: 18px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .admin-brand {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: inherit;
+  }
+
+  .admin-page-title {
+    display: block;
+    font-size: 0.95rem;
+    color: #d1d5db;
+    margin-top: 2px;
+  }
+
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .admin-nav a {
+    color: #f9fafb;
+    font-size: 0.95rem;
+    opacity: 0.9;
+  }
+
+  .admin-nav a:hover {
+    opacity: 1;
+  }
+
+  .admin-main {
+    padding: 32px 24px 40px;
+  }
+
+  .admin-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e4e7ef;
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08);
+    padding: 26px 30px 32px;
+    border-radius: 0;
+  }
+
+  .admin-card__head {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .admin-card__head h2 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.4rem;
+  }
+
+  .admin-card__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 0;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .btn-primary {
+    background: #111;
+    color: #f8fafc;
+  }
+
+  .btn-primary:hover {
+    background: #1f1f1f;
+  }
+
+  .btn-secondary {
+    background: #e4e7ef;
+    color: #111827;
+  }
+
+  .btn-secondary:hover {
+    background: #d7dae4;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: #fff;
+  }
+
+  .btn-danger:hover {
+    background: #b91c1c;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid #edf0f7;
+    font-size: 0.95rem;
+  }
+
+  .admin-table th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    background: #f8fafc;
+  }
+
+  .admin-table tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .actions-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .inline-form {
+    display: inline;
+  }
+
+  .inline-form button {
+    border: none;
+    background: none;
+    color: #dc2626;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+
+  .inline-form button:hover {
+    text-decoration: underline;
+  }
+
+  .admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 8px;
+  }
+
+  .admin-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .admin-form input[type="text"],
+  .admin-form input[type="number"],
+  .admin-form input[type="url"],
+  .admin-form input[type="email"],
+  .admin-form textarea,
+  .admin-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cfd5e1;
+    font-size: 0.95rem;
+    border-radius: 0;
+  }
+
+  .admin-form textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .admin-form .form-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-form .form-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .form-errors {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+    border-radius: 0;
+  }
+
+  .empty-state {
+    padding: 32px;
+    text-align: center;
+    color: #6b7280;
+    border: 1px dashed #dbe0ea;
+    border-radius: 0;
+  }
+
+  .helper-text {
+    font-size: 0.85rem;
+    color: #6b7280;
+  }
+</style>

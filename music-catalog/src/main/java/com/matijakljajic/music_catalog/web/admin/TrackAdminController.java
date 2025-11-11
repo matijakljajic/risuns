@@ -36,12 +36,13 @@ public class TrackAdminController {
   public String create(@Valid @ModelAttribute("track") Track track,
                        BindingResult br,
                        Model model,
-                       @RequestParam(value="genreIds", required=false) Long[] genreIds) {
+                       @RequestParam(value="genreIds", required=false) Long[] genreIds,
+                       @RequestParam(value="featureArtistIds", required=false) Long[] featureArtistIds) {
     if (br.hasErrors()) {
       populateLookups(model);
       return "admin/tracks/form";
     }
-    tracks.create(track, toIdList(genreIds));
+    tracks.create(track, toIdList(genreIds), toIdList(featureArtistIds));
     return "redirect:/admin/tracks";
   }
 
@@ -57,12 +58,13 @@ public class TrackAdminController {
                        @Valid @ModelAttribute("track") Track track,
                        BindingResult br,
                        Model model,
-                       @RequestParam(value="genreIds", required=false) Long[] genreIds) {
+                       @RequestParam(value="genreIds", required=false) Long[] genreIds,
+                       @RequestParam(value="featureArtistIds", required=false) Long[] featureArtistIds) {
     if (br.hasErrors()) {
       populateLookups(model);
       return "admin/tracks/form";
     }
-    tracks.update(id, track, toIdList(genreIds));
+    tracks.update(id, track, toIdList(genreIds), toIdList(featureArtistIds));
     return "redirect:/admin/tracks";
   }
 
@@ -75,6 +77,7 @@ public class TrackAdminController {
   private void populateLookups(Model model) {
     model.addAttribute("albums", tracks.allAlbums());
     model.addAttribute("genres", tracks.allGenres());
+    model.addAttribute("artists", tracks.allArtists());
   }
 
   private List<Long> toIdList(Long[] ids) {

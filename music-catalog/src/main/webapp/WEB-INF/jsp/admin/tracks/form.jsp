@@ -42,6 +42,23 @@
       </c:forEach>
     </select>
   </p>
+  <p>
+    <label>Featured Artists</label><br>
+    <select name="featureArtistIds" multiple size="8">
+      <c:forEach items="${artists}" var="artist">
+        <c:set var="selected" value="false"/>
+        <c:forEach items="${track.features}" var="feat">
+          <c:if test="${feat.artist != null && feat.artist.id == artist.id}">
+            <c:set var="selected" value="true"/>
+          </c:if>
+        </c:forEach>
+        <option value="${artist.id}" <c:if test="${selected}">selected</c:if>>
+          ${artist.name}
+        </option>
+      </c:forEach>
+    </select>
+    <br><small>Hold Ctrl/Cmd to select multiple artists; order is the selection order.</small>
+  </p>
   <p><button type="submit">Save</button> <a href="/admin/tracks">Cancel</a></p>
 </form>
 

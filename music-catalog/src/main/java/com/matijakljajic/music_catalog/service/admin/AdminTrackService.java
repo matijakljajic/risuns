@@ -1,9 +1,12 @@
 package com.matijakljajic.music_catalog.service.admin;
 
 import com.matijakljajic.music_catalog.model.Album;
+import com.matijakljajic.music_catalog.model.Artist;
 import com.matijakljajic.music_catalog.model.Genre;
 import com.matijakljajic.music_catalog.model.Track;
+import com.matijakljajic.music_catalog.model.TrackFeature;
 import com.matijakljajic.music_catalog.repository.AlbumRepository;
+import com.matijakljajic.music_catalog.repository.ArtistRepository;
 import com.matijakljajic.music_catalog.repository.GenreRepository;
 import com.matijakljajic.music_catalog.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ public class AdminTrackService {
   private final TrackRepository tracks;
   private final AlbumRepository albums;
   private final GenreRepository genres;
+  private final ArtistRepository artists;
 
   public List<Track> findAll() {
     return tracks.findAll();
@@ -40,22 +44,28 @@ public class AdminTrackService {
     return genres.findAll();
   }
 
+  public List<Artist> allArtists() {
+    return artists.findAll();
+  }
+
   @Transactional
-  public Track create(Track track, List<Long> genreIds) {
+  public Track create(Track track, List<Long> genreIds, List<Long> featureArtistIds) {
     track.setId(null);
     track.setAlbum(resolveAlbum(track.getAlbum()));
     applyGenres(track, genreIds);
+    applyFeatures(track, featureArtistIds);
     return tracks.save(track);
   }
 
   @Transactional
-  public Track update(Long id, Track updated, List<Long> genreIds) {
+  public Track update(Long id, Track updated, List<Long> genreIds, List<Long> featureArtistIds) {
     Track managed = tracks.findById(id).orElseThrow();
     managed.setTitle(updated.getTitle());
     managed.setTrackNo(updated.getTrackNo());
     managed.setExplicit(updated.isExplicit());
     managed.setAlbum(resolveAlbum(updated.getAlbum()));
     applyGenres(managed, genreIds);
+    applyFeatures(managed, featureArtistIds);
     return managed;
   }
 
@@ -77,5 +87,21 @@ public class AdminTrackService {
         : new LinkedHashSet<>(genres.findAllById(genreIds));
     track.getGenres().clear();
     track.getGenres().addAll(newGenres);
+  }
+
+  private void applyFeatures(Track track, List<Long> artistIds) {
+    track.getFeatures().clear();
+    if (artistIds == null || artistIds.isEmpty()) {
+      return;
+    }
+    int order = 0;
+    for (Long artistId : artistIds) {
+      Artist artist = artists.findById(artistId).orElseThrow();
+      TrackFeature feature = new TrackFeature();
+      feature.setTrack(track);
+      feature.setArtist(artist);
+      feature.setCreditOrder(order++);
+      track.getFeatures().add(feature);
+    }
   }
 }

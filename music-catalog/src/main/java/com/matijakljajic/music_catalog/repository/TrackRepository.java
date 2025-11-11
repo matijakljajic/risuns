@@ -19,10 +19,21 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
   @EntityGraph(attributePaths = {"album","album.primaryArtist","genres"})
   List<Track> findByTitleContainingIgnoreCase(String q);
 
-  @EntityGraph(attributePaths = {"album","album.primaryArtist","genres"})
+  @EntityGraph(attributePaths = {
+      "album",
+      "album.primaryArtist",
+      "features",
+      "features.artist"
+  })
   List<Track> findByAlbumIdOrderByTrackNoAsc(Long albumId);
 
-  @EntityGraph(attributePaths = {"album","album.primaryArtist","genres"})
+  @EntityGraph(attributePaths = {
+      "album",
+      "album.primaryArtist",
+      "genres",
+      "features",
+      "features.artist"
+  })
   List<Track> findByGenresId(Long genreId);
 
   @EntityGraph(attributePaths = {

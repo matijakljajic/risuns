@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -19,6 +18,7 @@ public class SecurityConfig {
       .authorizeHttpRequests(auth -> auth
         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+        .requestMatchers("/webjars/**", "/assets/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
         .requestMatchers("/users/*/report/**").authenticated()
         .requestMatchers(HttpMethod.GET,
             "/", "/search", "/search/**", "/artists/**", "/albums/**", "/playlists/**", "/users/**", "/ping"
@@ -46,10 +46,4 @@ public class SecurityConfig {
     return http.build();
   }
 
-  @Bean
-  WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web.ignoring().requestMatchers(
-      "/webjars/**", "/assets/**", "/static/**", "/css/**", "/js/**", "/images/**"
-    );
-  }
 }

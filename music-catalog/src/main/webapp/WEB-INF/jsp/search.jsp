@@ -356,10 +356,23 @@
       const genreSelect = document.querySelector('[data-genre-select="true"]');
       const loadedFilters = new Set();
 
+      function setBlockState(block, visible) {
+        const inputs = block.querySelectorAll('input, select, textarea');
+        block.classList.toggle('is-visible', visible);
+        inputs.forEach(el => {
+          if (visible) {
+            el.disabled = false;
+          } else {
+            el.disabled = true;
+          }
+        });
+      }
+
       function syncFilters(){
         const val = typeSelect ? typeSelect.value : 'general';
         filterBlocks.forEach(block => {
-          block.classList.toggle('is-visible', block.getAttribute('data-filter') === val);
+          const match = block.getAttribute('data-filter') === val;
+          setBlockState(block, match);
         });
         ensureFilterData(val);
       }

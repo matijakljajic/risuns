@@ -29,15 +29,8 @@ public class AdminTrackService {
   private final GenreRepository genres;
   private final ArtistRepository artists;
 
-  public List<Track> findAll() {
-    return tracks.findAll();
-  }
-
   public List<Track> search(String query, Long genreId, Boolean explicit) {
     String trimmed = StringUtils.hasText(query) ? query.trim() : null;
-    if (trimmed == null && genreId == null && explicit == null) {
-      return findAll();
-    }
     return tracks.search(trimmed, genreId, explicit);
   }
 

@@ -155,7 +155,7 @@
                 </textElement>
                 <text><![CDATA[Top tracks (7 days)]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement x="10" y="32" width="495" height="58" uuid="700a5342-5674-4bd8-8e79-142fe975d87c"/>
                 <textFieldExpression><![CDATA[$P{TopTracksText}]]></textFieldExpression>
             </textField>

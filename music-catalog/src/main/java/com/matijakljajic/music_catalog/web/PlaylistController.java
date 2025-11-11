@@ -1,6 +1,7 @@
 package com.matijakljajic.music_catalog.web;
 
 import com.matijakljajic.music_catalog.service.catalog.PlaylistViewService;
+import com.matijakljajic.music_catalog.service.library.UserPlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class PlaylistController {
       DateTimeFormatter.ofPattern("d MMM uuuu · HH:mm").withZone(ZoneId.systemDefault());
 
   private final PlaylistViewService playlistViews;
+  private final UserPlaylistService userPlaylists;
 
   @GetMapping("/{id}")
   public String view(@PathVariable Long id, Authentication authentication, Model model) {
@@ -28,6 +30,8 @@ public class PlaylistController {
     model.addAttribute("playlist", view.getPlaylist());
     model.addAttribute("items", view.getItems());
     model.addAttribute("playlistTopListeners", view.getTopListeners());
+    model.addAttribute("canManage", view.isCanManage());
+    model.addAttribute("myPlaylists", userPlaylists.ownedPlaylists(authentication));
     if (view.getPlaylist().getCreatedAt() != null) {
       model.addAttribute("playlistCreatedAt",
           HUMAN_DATETIME.format(view.getPlaylist().getCreatedAt()));

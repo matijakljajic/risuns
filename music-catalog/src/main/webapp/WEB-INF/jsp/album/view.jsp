@@ -8,6 +8,7 @@
   <%@ include file="/WEB-INF/jsp/_public_styles.jspf" %>
 </head>
 <body>
+  <c:set var="albumLink" value="/albums/${album.id}"/>
   <div class="page-shell">
     <a class="back-link" href="/">← Home</a>
     <div class="content-card">
@@ -54,7 +55,7 @@
             <c:otherwise>
               <div class="track-list">
                 <c:forEach items="${tracks}" var="track" varStatus="loop">
-                  <div class="track-row">
+                  <div class="track-row" style="gap:18px;">
                     <div>
                       <small>#<c:out value="${track.trackNo != null ? track.trackNo : loop.index + 1}"/></small>
                       <span>
@@ -67,9 +68,20 @@
                         </c:if>
                       </span>
                     </div>
-                    <c:if test="${track.explicit}">
-                      <span class="pill">Explicit</span>
-                    </c:if>
+                    <div style="margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                      <c:if test="${track.explicit}">
+                        <span class="pill">Explicit</span>
+                      </c:if>
+                      <c:if test="${not empty myPlaylists}">
+                        <button type="button"
+                                class="btn small tertiary add-to-playlist-btn"
+                                data-track="${track.id}"
+                                data-track-title="${track.title}"
+                                aria-label="Add to playlist">
+                          +
+                        </button>
+                      </c:if>
+                    </div>
                   </div>
                 </c:forEach>
               </div>
@@ -96,6 +108,51 @@
           </ul>
         </c:otherwise>
       </c:choose>
+      <c:if test="${not empty myPlaylists}">
+        <dialog id="albumAddToPlaylistDialog">
+          <form method="post" action="/playlists/actions/add-track">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <input type="hidden" name="trackId" id="albumDialogTrackId"/>
+            <input type="hidden" name="redirect" value="${albumLink}"/>
+            <div>
+              <strong>Add track to playlist</strong>
+              <p id="albumDialogTrackLabel" style="margin: 8px 0 12px;"></p>
+            </div>
+            <label style="display:block; font-weight:600; margin-bottom:6px;">Choose playlist</label>
+            <select name="targetPlaylistId" required style="width:100%; padding:6px; border:1px solid #cbd5f5;">
+              <c:forEach items="${myPlaylists}" var="owned">
+                <option value="${owned.id}">
+                  ${owned.name}<c:if test="${not owned['public']}"> (Private)</c:if>
+                </option>
+              </c:forEach>
+            </select>
+            <div class="dialog-actions">
+              <button type="submit" class="btn">Add</button>
+              <button type="button" class="btn secondary" data-close>Cancel</button>
+            </div>
+          </form>
+        </dialog>
+        <script>
+          (function() {
+            const dialog = document.getElementById('albumAddToPlaylistDialog');
+            if (!dialog) return;
+            const trackIdInput = document.getElementById('albumDialogTrackId');
+            const trackLabel = document.getElementById('albumDialogTrackLabel');
+            document.querySelectorAll('.add-to-playlist-btn').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                trackIdInput.value = btn.dataset.track;
+                trackLabel.textContent = '“' + btn.dataset.trackTitle + '”';
+                dialog.showModal();
+              });
+            });
+            dialog.querySelectorAll('[data-close]').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                dialog.close();
+              });
+            });
+          })();
+        </script>
+      </c:if>
     </div>
   </div>
 </body>

@@ -31,7 +31,8 @@ public class PlaylistViewService {
     }
     List<PlaylistItem> items = playlistItems.findByPlaylistIdOrderByPositionAsc(playlistId);
     var topListeners = listeningStats.topListenersForPlaylist(playlistId);
-    return new PlaylistView(playlist, items, topListeners);
+    boolean canManage = canManage(playlist, authentication);
+    return new PlaylistView(playlist, items, topListeners, canManage);
   }
 
   private boolean canView(Playlist playlist, Authentication authentication) {
@@ -51,11 +52,26 @@ public class PlaylistViewService {
     return isOwner || isAdmin;
   }
 
+  private boolean canManage(Playlist playlist, Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()
+        || authentication instanceof AnonymousAuthenticationToken) {
+      return false;
+    }
+    String username = authentication.getName();
+    boolean isOwner = playlist.getUser() != null
+        && playlist.getUser().getUsername() != null
+        && playlist.getUser().getUsername().equalsIgnoreCase(username);
+    boolean isAdmin = authentication.getAuthorities().stream()
+        .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()));
+    return isOwner || isAdmin;
+  }
+
   @Getter
   @AllArgsConstructor
   public static class PlaylistView {
     private final Playlist playlist;
     private final List<PlaylistItem> items;
     private final List<ListeningStatsService.TopListener> topListeners;
+    private final boolean canManage;
   }
 }

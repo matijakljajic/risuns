@@ -47,7 +47,12 @@
         <div class="meta-item"><strong>Email</strong><br><c:out value="${profile.email}"/></div>
       </div>
 
-      <h3>Playlists</h3>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <h3 style="margin:0;">Playlists</h3>
+        <c:if test="${isSelf}">
+          <a class="btn small" href="/users/${profile.id}/playlists/manage">Manage playlists</a>
+        </c:if>
+      </div>
       <p>
         Public: ${publicPlaylistCount}
         <c:if test="${isSelf}">

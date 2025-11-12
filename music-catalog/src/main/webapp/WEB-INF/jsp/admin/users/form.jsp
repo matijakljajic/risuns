@@ -46,7 +46,10 @@
           </select>
         </div>
         <div class="form-row">
-          <label><input type="checkbox" name="enabled" <c:if test="${user.enabled}">checked</c:if>> Enabled</label>
+          <label>
+            <input type="hidden" name="_enabled" value="on">
+            <input type="checkbox" name="enabled" value="true" <c:if test="${user.enabled}">checked</c:if>> Enabled
+          </label>
         </div>
         <div class="form-row">
           <label for="password">Password <span class="helper-text">(leave blank to keep current)</span></label>

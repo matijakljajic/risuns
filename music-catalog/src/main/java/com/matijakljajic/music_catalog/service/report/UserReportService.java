@@ -39,7 +39,7 @@ public class UserReportService {
   private final JasperReport compiledTemplate;
 
   public UserReportService(UserProfileService userProfiles,
-                           @Value("classpath:reports/user-profile.jrxml") Resource template) {
+                           @Value("classpath:templates/reports/user-profile.jrxml") Resource template) {
     this.userProfiles = userProfiles;
     this.compiledTemplate = compile(template);
   }

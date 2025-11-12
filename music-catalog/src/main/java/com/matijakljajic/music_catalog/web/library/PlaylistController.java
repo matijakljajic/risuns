@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.library;
 
 import com.matijakljajic.music_catalog.service.catalog.PlaylistViewService;
 import com.matijakljajic.music_catalog.service.library.UserPlaylistService;
@@ -36,6 +36,6 @@ public class PlaylistController {
       model.addAttribute("playlistCreatedAt",
           HUMAN_DATETIME.format(view.getPlaylist().getCreatedAt()));
     }
-    return "playlist/view";
+    return "library/playlist/view";
   }
 }

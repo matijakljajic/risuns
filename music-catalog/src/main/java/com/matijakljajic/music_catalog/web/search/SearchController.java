@@ -1,40 +1,32 @@
-package com.matijakljajic.music_catalog;
+package com.matijakljajic.music_catalog.web.search;
 
 import com.matijakljajic.music_catalog.model.Role;
 import com.matijakljajic.music_catalog.service.catalog.GenreBrowseService;
-import com.matijakljajic.music_catalog.service.listening.RecentListenService;
 import com.matijakljajic.music_catalog.service.search.SearchService;
+import com.matijakljajic.music_catalog.service.search.SearchService.AlbumResult;
+import com.matijakljajic.music_catalog.service.search.SearchService.ArtistResult;
+import com.matijakljajic.music_catalog.service.search.SearchService.PlaylistResult;
 import com.matijakljajic.music_catalog.service.search.SearchService.SearchResults;
 import com.matijakljajic.music_catalog.service.search.SearchService.TrackResult;
-import com.matijakljajic.music_catalog.service.search.SearchService.ArtistResult;
-import com.matijakljajic.music_catalog.service.search.SearchService.AlbumResult;
-import com.matijakljajic.music_catalog.service.search.SearchService.PlaylistResult;
 import com.matijakljajic.music_catalog.service.search.SearchService.UserResult;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+@RequestMapping("/search")
+public class SearchController {
 
-  private final RecentListenService recentListens;
-  private final GenreBrowseService genres;
   private final SearchService searchService;
+  private final GenreBrowseService genres;
 
-  @GetMapping("/")
-  public String home(Model model) {
-    model.addAttribute("recentListens", recentListens.latest(10));
-    model.addAttribute("genres", genres.allGenres());
-    return "home";
-  }
-
-  @GetMapping("/search")
+  @GetMapping
   public String search(@RequestParam(value = "q", required = false) String query,
                        @RequestParam(value = "genreId", required = false) Long genreId,
                        @RequestParam(value = "type", defaultValue = "general") String type,
@@ -102,17 +94,10 @@ public class HomeController {
     model.addAttribute("playlistResults", playlistResults);
     model.addAttribute("userResults", userResults);
 
-    return "search";
+    return "search/search";
   }
 
-  // --- Diagnostic endpoint ---
-  @GetMapping("/ping")
-  @ResponseBody
-  public String ping() {
-    return "ok";
-  }
-
-  @GetMapping("/search/filter-data")
+  @GetMapping("/filter-data")
   @ResponseBody
   public FilterDataResponse filterData(@RequestParam("type") String type) {
     String searchType = normalizeType(type);

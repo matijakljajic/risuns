@@ -19,14 +19,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +43,9 @@ public class MessageService {
 
   public ConversationView loadConversation(Authentication authentication, Long requestedUserId) {
     User current = requireUser(authentication);
-    List<RecipientOption> partners = conversationPartners(current, requestedUserId);
-    RecipientOption selected = selectCounterpart(current, partners, requestedUserId);
+    Map<Long, Instant> lastActivity = partnerLastActivity(current);
+    List<RecipientOption> partners = conversationPartners(current, lastActivity);
+    RecipientOption selected = selectCounterpart(current, partners, requestedUserId, lastActivity);
     ConversationChunk chunk = selected == null
         ? new ConversationChunk(List.of(), null)
         : fetchConversationChunk(current, selected.getId(), 0);
@@ -121,7 +124,7 @@ public class MessageService {
         .toList();
   }
 
-  private List<RecipientOption> conversationPartners(User current, Long requestedUserId) {
+  private List<RecipientOption> conversationPartners(User current, Map<Long, Instant> lastActivity) {
     List<User> incoming = messages.findDistinctSendersByReceiverId(current.getId());
     List<User> outgoing = messages.findDistinctReceiversBySenderId(current.getId());
     LinkedHashMap<Long, RecipientOption> dedup = new LinkedHashMap<>();
@@ -134,13 +137,14 @@ public class MessageService {
         .filter(u -> !Objects.equals(u.getId(), current.getId()))
         .forEach(u -> dedup.putIfAbsent(u.getId(), RecipientOption.from(u)));
     List<RecipientOption> partners = new ArrayList<>(dedup.values());
-    partners.sort(Comparator.comparing(RecipientOption::getLabel, String.CASE_INSENSITIVE_ORDER));
+    sortPartners(partners, lastActivity);
     return partners;
   }
 
   private RecipientOption selectCounterpart(User current,
                                             List<RecipientOption> partners,
-                                            Long requestedUserId) {
+                                            Long requestedUserId,
+                                            Map<Long, Instant> lastActivity) {
     if (requestedUserId != null) {
       if (Objects.equals(requestedUserId, current.getId())) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot open conversation with yourself");
@@ -156,10 +160,38 @@ public class MessageService {
           .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
       RecipientOption extra = RecipientOption.from(user);
       partners.add(extra);
-      partners.sort(Comparator.comparing(RecipientOption::getLabel, String.CASE_INSENSITIVE_ORDER));
+      sortPartners(partners, lastActivity);
       return extra;
     }
     return partners.isEmpty() ? null : partners.get(0);
+  }
+
+  private Map<Long, Instant> partnerLastActivity(User current) {
+    Map<Long, Instant> activity = new HashMap<>();
+    mergeActivity(activity, messages.findLastActivitySent(current.getId()));
+    mergeActivity(activity, messages.findLastActivityReceived(current.getId()));
+    return activity;
+  }
+
+  private void mergeActivity(Map<Long, Instant> target, List<MessageRepository.PartnerActivity> chunk) {
+    for (MessageRepository.PartnerActivity entry : chunk) {
+      if (entry.getPartnerId() == null || entry.getLastSentAt() == null) continue;
+      target.merge(entry.getPartnerId(), entry.getLastSentAt(),
+          (existing, incoming) -> incoming.isAfter(existing) ? incoming : existing);
+    }
+  }
+
+  private void sortPartners(List<RecipientOption> partners, Map<Long, Instant> lastActivity) {
+    partners.sort((a, b) -> {
+      Instant left = lastActivity.get(a.getId());
+      Instant right = lastActivity.get(b.getId());
+      if (left == null && right == null) {
+        return String.CASE_INSENSITIVE_ORDER.compare(a.getLabel(), b.getLabel());
+      }
+      if (left == null) return 1;
+      if (right == null) return -1;
+      return right.compareTo(left);
+    });
   }
 
   @Getter

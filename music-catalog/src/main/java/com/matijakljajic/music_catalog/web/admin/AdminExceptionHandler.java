@@ -1,12 +1,11 @@
-// src/main/java/.../web/GlobalExceptionHandler.java
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.admin;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@ControllerAdvice("com.matijakljajic.music_catalog.web.admin")
+public class AdminExceptionHandler {
   @ExceptionHandler(DataIntegrityViolationException.class)
   public String onConstraint(DataIntegrityViolationException ex, Model model) {
     model.addAttribute("dbError", "Database constraint failed (possibly duplicate or FK).");

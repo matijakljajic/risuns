@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.catalog;
 
 import com.matijakljajic.music_catalog.service.catalog.ArtistViewService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,6 @@ public class ArtistController {
     var view = artistViews.getArtist(id);
     model.addAttribute("artist", view.getArtist());
     model.addAttribute("albums", view.getAlbums());
-    return "artist/view";
+    return "catalog/artist/view";
   }
 }

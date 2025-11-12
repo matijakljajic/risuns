@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.library;
 
 import com.matijakljajic.music_catalog.service.library.UserPlaylistService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserPlaylistController {
     model.addAttribute("owner", view.getOwner());
     model.addAttribute("playlists", view.getPlaylists());
     model.addAttribute("self", view.isSelf());
-    return "user/manage-playlists";
+    return "library/manage-playlists";
   }
 
   @PostMapping

@@ -1,9 +1,7 @@
-// src/main/java/com/matijakljajic/music_catalog/web/AuthController.java
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.auth;
 
 import com.matijakljajic.music_catalog.model.User;
 import com.matijakljajic.music_catalog.repository.UserRepository;
-import com.matijakljajic.music_catalog.web.auth.SignupForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

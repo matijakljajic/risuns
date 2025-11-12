@@ -8,7 +8,6 @@ import lombok.*;
   name = "playlist_item",
   uniqueConstraints = {
     @UniqueConstraint(name = "uq_playlist_track", columnNames = {"playlist_id","track_id"}),
-    // keep ordering sane per playlist; make it unique if you want strictness:
     @UniqueConstraint(name = "uq_playlist_position", columnNames = {"playlist_id","position"})
   },
   indexes = {

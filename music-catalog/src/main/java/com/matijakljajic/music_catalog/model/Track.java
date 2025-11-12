@@ -28,7 +28,6 @@ public class Track {
   @Column(name="is_explicit", nullable = false)
   private boolean explicit;
 
-  /** Many-to-many Track↔Genre via track_genre (no extra fields) */
   @ManyToMany
   @JoinTable(
     name = "track_genre",
@@ -37,7 +36,6 @@ public class Track {
   )
   private Set<Genre> genres = new LinkedHashSet<>();
 
-  /** Featured artists with credit order via TrackFeature entity */
   @OneToMany(mappedBy = "track", cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("creditOrder ASC")
   private List<TrackFeature> features = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.library;
 
 import com.matijakljajic.music_catalog.service.library.UserPlaylistService;
 import lombok.RequiredArgsConstructor;

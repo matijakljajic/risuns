@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.profile;
 
 import com.matijakljajic.music_catalog.repository.UserRepository;
 import com.matijakljajic.music_catalog.service.profile.UserProfileService;
@@ -55,6 +55,6 @@ public class UserProfileController {
     model.addAttribute("pageStart", view.getPageStart());
     model.addAttribute("pageEnd", view.getPageEnd());
     model.addAttribute("topTracks", view.getTopTracks());
-    return "user/view";
+    return "profile/view";
   }
 }

@@ -1,4 +1,3 @@
-// src/main/java/com/matijakljajic/music_catalog/config/SecurityConfig.java
 package com.matijakljajic.music_catalog.config;
 
 import jakarta.servlet.DispatcherType;

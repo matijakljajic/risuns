@@ -30,7 +30,6 @@ public class TrackFeature {
   @JoinColumn(name = "artist_id", nullable = false)
   private Artist artist;
 
-  /** Optional: order of appearance on the track credits (0,1,2,...) */
   @Column(name = "credit_order")
   private Integer creditOrder;
 }

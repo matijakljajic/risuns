@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.report;
 
 import com.matijakljajic.music_catalog.model.Playlist;
 import com.matijakljajic.music_catalog.service.profile.UserProfileService;
@@ -56,7 +56,7 @@ public class UserReportController {
     model.addAttribute("playlistSummaries", summarize(view.getVisiblePlaylists()));
     model.addAttribute("downloadUrl", "/users/" + userId + "/report/download");
     model.addAttribute("generatedAt", DATE_TIME.format(Instant.now()));
-    return "user/report";
+    return "profile/report";
   }
 
   @GetMapping(value = "/download", produces = MediaType.APPLICATION_PDF_VALUE)

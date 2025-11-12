@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.messaging;
 
 import com.matijakljajic.music_catalog.service.messaging.MessageService;
 import com.matijakljajic.music_catalog.service.messaging.MessageService.ComposeContext;

@@ -1,4 +1,4 @@
-package com.matijakljajic.music_catalog.web;
+package com.matijakljajic.music_catalog.web.catalog;
 
 import com.matijakljajic.music_catalog.service.catalog.AlbumViewService;
 import com.matijakljajic.music_catalog.service.library.UserPlaylistService;
@@ -25,6 +25,6 @@ public class AlbumController {
     model.addAttribute("tracks", view.getTracks());
     model.addAttribute("albumTopListeners", view.getTopListeners());
     model.addAttribute("myPlaylists", userPlaylists.ownedPlaylists(authentication));
-    return "album/view";
+    return "catalog/album/view";
   }
 }

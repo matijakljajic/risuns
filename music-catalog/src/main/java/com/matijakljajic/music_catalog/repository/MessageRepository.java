@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
+    
   List<Message> findByReceiverUsernameOrderBySentAtDesc(String username);
   List<Message> findBySenderUsernameOrderBySentAtDesc(String username);
 
@@ -49,4 +50,25 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
   Page<Message> findConversationPage(@Param("currentId") Long currentId,
                                      @Param("otherId") Long otherId,
                                      Pageable pageable);
+
+  interface PartnerActivity {
+    Long getPartnerId();
+    java.time.Instant getLastSentAt();
+  }
+
+  @Query("""
+      select m.receiver.id as partnerId, max(m.sentAt) as lastSentAt
+      from Message m
+      where m.sender.id = :currentId
+      group by m.receiver.id
+      """)
+  List<PartnerActivity> findLastActivitySent(@Param("currentId") Long currentId);
+
+  @Query("""
+      select m.sender.id as partnerId, max(m.sentAt) as lastSentAt
+      from Message m
+      where m.receiver.id = :currentId
+      group by m.sender.id
+      """)
+  List<PartnerActivity> findLastActivityReceived(@Param("currentId") Long currentId);
 }

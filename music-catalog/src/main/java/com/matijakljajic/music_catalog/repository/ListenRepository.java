@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ListenRepository extends JpaRepository<Listen, Long> {
+  
   List<Listen> findByUserUsernameOrderByListenedAtDesc(String username, Pageable pageable);
 
   List<Listen> findByUserIdOrderByListenedAtDesc(Long userId);
